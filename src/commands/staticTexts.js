@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js')
-
+const { MessageButton } = require(`../../modified_modules/discord-buttons/src/index`)
 const ContactUs = new MessageEmbed()
 .setTitle("Contact us")
 .setDescription(
@@ -65,7 +65,10 @@ Example:
 
 \`.contact\` : To contact the developer`
 
-
+const HelpButton = new MessageButton()
+.setLabel('Invite now')
+.setStyle('url')
+.setURL('https://discord.com/oauth2/authorize?client_id=848571510243590165&permissions=8&scope=bot%20applications.commands')
 
 
 const Help = new MessageEmbed()
@@ -75,13 +78,11 @@ const Help = new MessageEmbed()
 .setFooter("Hope you'd find this bot useful and have fun :)")
 
 async function sendContactDetails(msg){
-    console.log(msg)
     await msg.reply(ContactUs);
 }
 
 async function sendHelpMessage(msg){
-    console.log('here')
-    await msg.reply(Help);
+    await msg.reply(Help, { button : HelpButton });
 }
 
 module.exports = { sendContactDetails , sendHelpMessage }
