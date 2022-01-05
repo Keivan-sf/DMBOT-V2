@@ -1,0 +1,16 @@
+{
+  "name": "dmbot-v2",
+  "version": "2.0.0",
+  "description": "Deadmoments bot v2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord-buttons": "^4.0.0-deprecated",
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0"
+  }
+}
