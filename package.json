@@ -11,6 +11,8 @@
   "dependencies": {
     "discord-buttons": "^4.0.0-deprecated",
     "discord.js": "^12.5.3",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "node-rjdl": "^1.1.2",
+    "ytdl-core": "^4.9.2"
   }
 }

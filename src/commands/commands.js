@@ -1,4 +1,5 @@
 const staticMessage = require('./staticTexts');
+const player_commands = require('./player-commands.js')
 
 const Prefix = '.';
 
@@ -40,7 +41,7 @@ const commands = {
     query : {
 
         'price' : () => console.log('qprice'),
-        'play' : () => console.log('qplay'),
+        'play' : player_commands.playMusic,
         'p' : () => console.log('qp'),
         'search' : () => console.log('qsearch'),
         'search' : () => console.log('qsearch'),
