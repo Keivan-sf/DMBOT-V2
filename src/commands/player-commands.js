@@ -1,8 +1,7 @@
-const { getType } = require('../music/input_type.js');
+const { getInputType } = require('../music/input_type.js');
 
 function playMusic(message , input){
-    const type = getType(input);
-    message.reply(type.join(' / '))
+    const type = getInputType(input);
 }
 
 module.exports = { playMusic };

@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core')
 const rjdl = require('node-rjdl')
 
-let validRjTypes = [
+const validRjTypes = [
   'song',
   'playList',
   'video',
@@ -9,72 +9,160 @@ let validRjTypes = [
   'album'
 ]
 
-/**
- * A module to get user's input type
- * @param {String} userInput 
- * @returns __1st__ arg is the platform and the __2nd__ arg the type 
- * 
- * Example: `['soundcloud' , 'sets']`
- */
+const protocols = ['https' , 'http']
 
-function getType(userInput){
-  let typeOf = ['simple' , null];
-  if( ( userInput.includes("playlist?list=") || userInput.includes("/channel/") || userInput.includes("/user/") ) && (userInput.startsWith("https://youtube.com/") || userInput.startsWith("https://www.youtube.com/") || userInput.startsWith("http://www.youtube.com/") ||  userInput.startsWith("http://youtube.com/") || userInput.startsWith("youtube.com/") || userInput.startsWith("www.youtube.com/") || userInput.startsWith("youtu.be/") ||  userInput.startsWith("www.youtu.be/"))){
-          if(userInput.includes("playlist?list=")){
-              typeOf = ['ytpl' , 'playlist']
-          }else if(userInput.includes("/channel/")){
-              typeOf = ['ytpl' , 'channel']
-          }else if(userInput.includes("/user/")){
-              typeOf = ['ytpl' , 'user']
-          }
-    }else if(ytdl.validateURL(userInput)){
-      typeOf = ['validateYTDL' , null]
-    }else if(userInput.startsWith("https://soundcloud.com/")){
-      typeOf[0] = 'soundCloud';
-        if(userInput.includes("/sets/")){
-          typeOf[1] = 'sets';
-        }else if(userInput != "https://soundcloud.com/"){
-          if(userInput.split("soundcloud.com/")[1].includes("/")){
-            var securl = userInput.split("soundcloud.com/")[1];
-            if(securl.split("/")[1] == null || securl.split("/")[1] == ""){
-              typeOf[1] = 'artist';
-            }else{
-              typeOf[1] = 'simple';
-            }
-          }else{
-            typeOf[1] = 'artist';
-          }
-        }else{
-          typeOf[1] = null;
-        }
-    }else if(userInput.startsWith("https://open.spotify.com")){
-        if(userInput.startsWith("https://open.spotify.com/track/")){
-          typeOf = ['spotify' , 'track']
-        }else if(userInput.startsWith("https://open.spotify.com/playlist/")){
-          typeOf = ['spotify' , 'playlist']
-        }else if(userInput.startsWith("https://open.spotify.com/album/")){
-          typeOf = ['spotify' , 'album']
-        }else if(userInput.startsWith("https://open.spotify.com/artist/")){
-          typeOf = ['spotify' , 'artist']
-        }
-    }else if(userInput.startsWith("https://www.radiojavan.com/")){
-      let secArg = rjdl.type(userInput);
-      typeOf = ['RadioJavan' , secArg]
-    }else if(userInput.startsWith('https://deadmoments.com/playlist.php?id=') && userInput.includes('&count=')){
-      typeOf = ['DeadMoments' , 'playlist']
-    }else{
-      // simple txt
-    }
-  
-    return typeOf;
+const types = [
+  {
+    name :'youtube',
+    addresses : [
+      'youtube.com',
+      'youtu.be'
+    ],
+    types : [
+      {
+        type : 'playlist',
+        indentifier : 'playlist?list='
+      },
+      {
+        type : 'channel',
+        indentifier : '/channel/'
+      },
+      {
+        type : 'channel',
+        indentifier : '/c/'
+      },
+      {
+        type : 'user',
+        indentifier : '/user/'
+      },
+    ]
+  },
+
+  {
+    name :'spotify',
+    addresses : [
+      'open.spotify.com',
+    ],
+    types : [
+      {
+        type : 'track',
+        indentifier : '/track/'
+      },
+      {
+        type : 'playlist',
+        indentifier : '/playlist/'
+      },
+      {
+        type : 'album',
+        indentifier : '/album/'
+      },
+      {
+        type : 'artist',
+        indentifier : '/artist/'
+      },
+    ]
+  },
+
+  {
+    name: 'soundcloud',
+    addresses : ['soundcloud.com']
+  },
+
+  {
+    name: 'deadmoments',
+    addresses : ['deadmoments.com/playlist.php?id='],
+    types: [
+      {
+        type : 'playlist',
+        indentifier: '&count='
+      }
+    ]
+  },
+
+  {
+    name: 'radiojavan',
+    addresses: ['radiojavan.com' , 'rjapp.app']
+  },
+
+]
+
+
+
+function getInputType(target){
+  const URL_DETECTED = detectURLs(target);
+  if(URL_DETECTED?.length < 1) return {type : 'keywords'};
+  let input = URL_DETECTED[0];
+  input = input.endsWith('/') ? input :  input + '/';
+  const generalType = getGeneralType(input);
+  const details = getDetailedType(input , generalType);
+  console.log(generalType , details);
 }
 
-function validateRjArg(type){
-    for(var i=0; i< validRjTypes.length; i++){
-      if(type == validRjTypes[i]) return true;
-    }
-    return false;
+/**
+ * @param {String} input 
+ * @returns 
+ */
+
+const getGeneralType = input => {
+
+  const isAddressIncluded = (address) => {
+    return protocols.some(port => {
+      const isIncluded = input.includes(`${port}://${address}`) || input.includes(`${port}://www.${address}`);
+      return isIncluded;
+    });
   }
+
+  let type = types.find(platform => platform.addresses.some(isAddressIncluded));
+  return type ? type : {name : 'keywords'};
+
+}
+
+const getDetailedType = (link , platform) => {
+  let defualtType = {type : 'keywords'};
+
+  switch(platform.name){
+    case 'spotify':
+      return matchIndentifiers(link , platform);
+
+    case 'deadmoments':
+      return matchIndentifiers(link , platform);
+
+    case 'youtube':
+      if(ytdl.validateURL(link)) return {platform: 'youtube' , type: 'video'};
+      return matchIndentifiers(link , platform);
+
+    case 'keywords':
+      return {type : 'keywords'};
+
+    case 'soundcloud':
+      if(link.includes('/sets/')) return {platform: 'soundcloud' , type: 'set'};
+      if(link.endsWith('soundcloud.com/')) return defualtType;
+      const args = link.split("soundcloud.com/")[1];
+      const argsArray = args.split('/');
+      if(argsArray[1]) return {platform: 'soundcloud' , type: 'song'};
+      return {platform: 'soundcloud' , type: 'artist'};
+
+    case 'radiojavan':
+      let type = rjdl.type(link);
+      if(type) return{platform: 'radiojavan' , type};
+      return defualtType;
+  }
+}
+
+const matchIndentifiers = (link , platform) => {
+  let linkType = platform.types.find(type => link.includes(type.indentifier));
+  if(!linkType) return defualtType;
+  return {
+    platform : platform.name,
+    type : linkType.type
+  }
+}
+
+const detectURLs = text => 
+  text.match(/(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g);
+
+
+const validateRjArg = type => validRjTypes.some(rjType => rjType === type);
   
 function getYoutubeID(input){
     var id = input;
@@ -99,4 +187,4 @@ function getYoutubeID(input){
 }
   
 
-module.exports = {getType , getYoutubeID , validateRjArg}
+module.exports = {getInputType , getYoutubeID , validateRjArg}
