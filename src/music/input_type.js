@@ -9,7 +9,7 @@ const validRjTypes = [
   'album'
 ]
 
-const protocols = ['https' , 'http']
+const protocols = ['https' , 'http'];
 
 const types = [
   {
@@ -86,16 +86,24 @@ const types = [
 
 ]
 
+/**
+ * @typedef {{platform: String , input: String , linktype: String}} type
+ */
 
+/**
+ * 
+ * @param {String} target 
+ * @returns {type}
+ */
 
 function getInputType(target){
   const URL_DETECTED = detectURLs(target);
-  if(URL_DETECTED?.length < 1) return {type : 'keywords'};
+  if(!URL_DETECTED || URL_DETECTED.length < 1) return {linktype : 'keywords' , input : target , platform: null};
   let input = URL_DETECTED[0];
   input = input.endsWith('/') ? input :  input + '/';
   const generalType = getGeneralType(input);
   const details = getDetailedType(input , generalType);
-  console.log(generalType , details);
+  return details;
 }
 
 /**
@@ -104,7 +112,6 @@ function getInputType(target){
  */
 
 const getGeneralType = input => {
-
   const isAddressIncluded = (address) => {
     return protocols.some(port => {
       const isIncluded = input.includes(`${port}://${address}`) || input.includes(`${port}://www.${address}`);
@@ -114,11 +121,17 @@ const getGeneralType = input => {
 
   let type = types.find(platform => platform.addresses.some(isAddressIncluded));
   return type ? type : {name : 'keywords'};
-
 }
 
+/**
+ * 
+ * @param {String} link 
+ * @param {Object} platform 
+ * @returns {type}
+ */
+
 const getDetailedType = (link , platform) => {
-  let defualtType = {type : 'keywords'};
+  let defualtType = {linktype : 'keywords' , input : link};
 
   switch(platform.name){
     case 'spotify':
@@ -128,54 +141,72 @@ const getDetailedType = (link , platform) => {
       return matchIndentifiers(link , platform);
 
     case 'youtube':
-      if(ytdl.validateURL(link)) return {platform: 'youtube' , type: 'video'};
+      if(ytdl.validateURL(link)) return {platform: 'youtube' , linktype: 'video' , input : link};
       return matchIndentifiers(link , platform);
 
     case 'keywords':
-      return {type : 'keywords'};
+      return defualtType;
 
     case 'soundcloud':
-      if(link.includes('/sets/')) return {platform: 'soundcloud' , type: 'set'};
-      if(link.endsWith('soundcloud.com/')) return defualtType;
+      if (ytdl.validateURLlink.includes('/sets/')) return {platform: 'soundcloud' , linktype: 'set' , input : link};
+      if (link.endsWith('soundcloud.com/')) return defualtType;
       const args = link.split("soundcloud.com/")[1];
       const argsArray = args.split('/');
-      if(argsArray[1]) return {platform: 'soundcloud' , type: 'song'};
-      return {platform: 'soundcloud' , type: 'artist'};
+      if (argsArray[1]) return {platform: 'soundcloud' , linktype: 'song' , input : link};
+      return {platform: 'soundcloud' , linktype: 'artist' , input : link};
 
     case 'radiojavan':
       let type = rjdl.type(link);
-      if(type) return{platform: 'radiojavan' , type};
+      if(type) return{platform: 'radiojavan' , linktype : type , input : link};
       return defualtType;
   }
 }
 
+// here  ,  document this !
+
 const matchIndentifiers = (link , platform) => {
   let linkType = platform.types.find(type => link.includes(type.indentifier));
-  if(!linkType) return defualtType;
+  if (!linkType) return defualtType;
   return {
     platform : platform.name,
-    type : linkType.type
+    type : linkType.type,
+    input : link
   }
 }
+
+
+/**
+ * Detecs URLs in a text
+ * @param {String} text 
+ */
 
 const detectURLs = text => 
   text.match(/(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g);
 
 
+/**
+ * Validates whether provided radiojavan type is supported or not
+ * @param {String} type Type to be checked
+ */
 const validateRjArg = type => validRjTypes.some(rjType => rjType === type);
-  
-function getYoutubeID(input){
-    var id = input;
-    if(input.includes("youtu.be/")){
-        id = input.split("youtu.be/")[1];
+
+
+/**
+ * Gets youtube ID from a valid youtube video url
+ * @param {String} url A valid video url from youtube
+ */
+function getYoutubeID(url){
+    let id = url;
+    if(url.includes("youtu.be/")){
+        id = url.split("youtu.be/")[1];
         if(id.includes("?")){
             id = id.split["?"][0];
         }
         if(id.includes("&")){
             id = id.split["&"][0];
         }
-    }else if(input.includes("v=")){
-        id= input.split("v=")[1];
+    }else if(url.includes("v=")){
+        id= url.split("v=")[1];
         if(id.includes("&")){
             id = id.split("&")[0];
         }
