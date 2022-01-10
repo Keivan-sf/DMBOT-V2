@@ -1,5 +1,7 @@
-const { MessageEmbed } = require('discord.js')
-const { MessageButton } = require(`../../modified_modules/discord-buttons/src/index`)
+const Disocrd = require('discord.js');
+const { MessageEmbed } = Disocrd;
+const { MessageButton } = require(`../../modified_modules/discord-buttons/src/index`);
+
 const ContactUs = new MessageEmbed()
 .setTitle("Contact us")
 .setDescription(
@@ -77,9 +79,20 @@ const Help = new MessageEmbed()
 .setDescription(helptext)
 .setFooter("Hope you'd find this bot useful and have fun :)")
 
+
+/**
+ * Used to send a message including contact info
+ * @param {Disocrd.Message} msg A recieved message from discord
+ */
+
 async function sendContactDetails(msg){
     await msg.reply(ContactUs);
 }
+
+/**
+ * Used to send a list of commands as help to user
+ * @param {Disocrd.Message} msg A recieved message from discord
+ */
 
 async function sendHelpMessage(msg){
     await msg.reply(Help, { button : HelpButton });

@@ -1,3 +1,19 @@
+
+/**
+ * @typedef {Object} PlatformsType
+ * @prop {String} type Type name, *example* `video` `playlist` `user` `song` `album` , ...
+ * @prop {String} identifire URL identifire, *example* `/channel/` , `/artist/` , `playlist?list=` , ...
+ */
+
+/**
+ * @typedef {Object} Platform
+ * @prop {String} name Platform's name
+ * @prop {String[]} addresses Platform's supported addresses
+ * @prop {Array<PlatformsType>} types
+ */
+
+
+
 const ytdl = require('ytdl-core')
 const rjdl = require('node-rjdl')
 
@@ -21,19 +37,19 @@ const types = [
     types : [
       {
         type : 'playlist',
-        indentifier : 'playlist?list='
+        identifire : 'playlist?list='
       },
       {
         type : 'channel',
-        indentifier : '/channel/'
+        identifire : '/channel/'
       },
       {
         type : 'channel',
-        indentifier : '/c/'
+        identifire : '/c/'
       },
       {
         type : 'user',
-        indentifier : '/user/'
+        identifire : '/user/'
       },
     ]
   },
@@ -46,19 +62,19 @@ const types = [
     types : [
       {
         type : 'track',
-        indentifier : '/track/'
+        identifire : '/track/'
       },
       {
         type : 'playlist',
-        indentifier : '/playlist/'
+        identifire : '/playlist/'
       },
       {
         type : 'album',
-        indentifier : '/album/'
+        identifire : '/album/'
       },
       {
         type : 'artist',
-        indentifier : '/artist/'
+        identifire : '/artist/'
       },
     ]
   },
@@ -74,7 +90,7 @@ const types = [
     types: [
       {
         type : 'playlist',
-        indentifier: '&count='
+        identifire: '&count='
       }
     ]
   },
@@ -108,7 +124,6 @@ function getInputType(target){
 
 /**
  * @param {String} input 
- * @returns 
  */
 
 const getGeneralType = input => {
@@ -135,20 +150,20 @@ const getDetailedType = (link , platform) => {
 
   switch(platform.name){
     case 'spotify':
-      return matchIndentifiers(link , platform);
+      return matchidentifires(link , platform);
 
     case 'deadmoments':
-      return matchIndentifiers(link , platform);
+      return matchidentifires(link , platform);
 
     case 'youtube':
       if(ytdl.validateURL(link)) return {platform: 'youtube' , linktype: 'video' , input : link};
-      return matchIndentifiers(link , platform);
+      return matchidentifires(link , platform);
 
     case 'keywords':
       return defualtType;
 
     case 'soundcloud':
-      if (ytdl.validateURLlink.includes('/sets/')) return {platform: 'soundcloud' , linktype: 'set' , input : link};
+      if (link.includes('/sets/')) return {platform: 'soundcloud' , linktype: 'set' , input : link};
       if (link.endsWith('soundcloud.com/')) return defualtType;
       const args = link.split("soundcloud.com/")[1];
       const argsArray = args.split('/');
@@ -162,10 +177,16 @@ const getDetailedType = (link , platform) => {
   }
 }
 
-// here  ,  document this !
+/**
+ * Used to chack all of a platfrom URL identifires and find out the type of it
+ * 
+ * __Note:__ This function only checks the standards provided in {@link types} varable
+ * @param {String} link 
+ * @param {types} platform 
+ */
 
-const matchIndentifiers = (link , platform) => {
-  let linkType = platform.types.find(type => link.includes(type.indentifier));
+const matchidentifires = (link , platform) => {
+  let linkType = platform.types.find(type => link.includes(type.identifire));
   if (!linkType) return defualtType;
   return {
     platform : platform.name,
@@ -176,8 +197,9 @@ const matchIndentifiers = (link , platform) => {
 
 
 /**
- * Detecs URLs in a text
- * @param {String} text 
+ * Used to detect URLs in a text
+ * @param {String} text
+ * @returns {RegExpMatchArray} An array of founded URLs *(Empty if not a single url has been found)*
  */
 
 const detectURLs = text => 
@@ -185,15 +207,16 @@ const detectURLs = text =>
 
 
 /**
- * Validates whether provided radiojavan type is supported or not
+ * Used to validate whether provided RadioJavan type is supported or not
  * @param {String} type Type to be checked
  */
 const validateRjArg = type => validRjTypes.some(rjType => rjType === type);
 
 
 /**
- * Gets youtube ID from a valid youtube video url
+ * Used to get youtube ID from a valid youtube video url
  * @param {String} url A valid video url from youtube
+ * @returns {String} Youtube id
  */
 function getYoutubeID(url){
     let id = url;

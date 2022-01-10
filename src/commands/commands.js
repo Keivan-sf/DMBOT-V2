@@ -1,4 +1,6 @@
+// @ts-check
 const staticMessage = require('./staticTexts');
+const Discord = require('discord.js')
 const player_commands = require('./player-commands.js')
 
 const Prefix = '.';
@@ -26,8 +28,6 @@ const commands = {
         'finish' : () => console.log('finish'),
         'save' : () => console.log('save'),
         'np' : () => console.log('np'),
-        'save' : () => console.log('save'),
-        'np' : () => console.log('np'),
         'lq' : () => console.log('lq'),
         'looq' : () => console.log('looq'),
         'suggestions': () => console.log('suggestions'),
@@ -44,14 +44,11 @@ const commands = {
         'play' : player_commands.playMusic,
         'p' : () => console.log('qp'),
         'search' : () => console.log('qsearch'),
-        'search' : () => console.log('qsearch'),
         'name' : () => console.log('qname'),
         'add' : () => console.log('qadd'),
         'save' : () => console.log('qsave'),
         'chart' : () => console.log('qchart'),
         'tech' : () => console.log('qtech'),
-        'chart' : () => console.log('qname'),
-
     },
 
 }
@@ -61,7 +58,10 @@ const commandList = {
     query : Object.keys(commands.query),
 }
 
-
+/**
+ * Used to handle a message and run a command if provided
+ * @param {Discord.Message} msg A recieved message from discord
+ */
 
 const handleMessage = async msg =>{
 
@@ -77,12 +77,27 @@ const handleMessage = async msg =>{
 
 }
 
+/**
+ * Used to handle static commands (without query)
+ * 
+ * such as `disconnect` , `dc` , `fg` , ...
+ * @param {String} content Message content without prefix
+ * @param {Discord.Message} message A recieved message from discord
+ */
 
 const handleStaticCommand = async (content , message) => {
     const contentLowerCase = content.toLowerCase();
     const command = commandList.static.find(value => contentLowerCase === value);
     if(command) await commands.static[command](message);
 }
+
+/**
+ * Used to handle query included commands
+ * 
+ * such as `play <Keyword|Link>` , `search <Keyword>`
+ * @param {*} content Message content without prefix
+ * @param {*} message A recieved message from discord
+ */
 
 const handleQueryCommand = async (content , message) => {
     const args = content.split(' ');
