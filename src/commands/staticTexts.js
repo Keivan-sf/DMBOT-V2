@@ -67,7 +67,7 @@ Example:
 
 \`.contact\` : To contact the developer`
 
-const HelpButton = new MessageButton()
+const InviteButton = new MessageButton()
 .setLabel('Invite now')
 .setStyle('url')
 .setURL('https://discord.com/oauth2/authorize?client_id=848571510243590165&permissions=8&scope=bot%20applications.commands')
@@ -95,7 +95,7 @@ async function sendContactDetails(msg){
  */
 
 async function sendHelpMessage(msg){
-    await msg.reply(Help, { button : HelpButton });
+    await msg.reply(Help, { buttons : InviteButton });
 }
 
 module.exports = { sendContactDetails , sendHelpMessage }

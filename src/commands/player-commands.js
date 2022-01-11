@@ -1,3 +1,4 @@
+// @ts-check
 const { getInputType } = require('../music/input_type');
 const getInfo = require('../music/info')
 

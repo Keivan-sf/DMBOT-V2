@@ -1,3 +1,4 @@
+// @ts-check
 const {workerData , parentPort} = require('worker_threads');
 const ytSearch = require('yt-search');
 

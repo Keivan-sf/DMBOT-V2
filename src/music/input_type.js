@@ -1,4 +1,4 @@
-
+// @ts-check
 /**
  * @typedef {Object} PlatformsType
  * @prop {String} type Type name, *example* `video` `playlist` `user` `song` `album` , ...
@@ -6,10 +6,15 @@
  */
 
 /**
+ * @typedef {{platform?: String , input?: String , linktype?: String}} type
+ */
+
+
+/**
  * @typedef {Object} Platform
  * @prop {String} name Platform's name
- * @prop {String[]} addresses Platform's supported addresses
- * @prop {Array<PlatformsType>} types
+ * @prop {String[]} [addresses] Platform's supported addresses
+ * @prop {Array<PlatformsType>} [types]
  */
 
 
@@ -102,9 +107,6 @@ const types = [
 
 ]
 
-/**
- * @typedef {{platform: String , input: String , linktype: String}} type
- */
 
 /**
  * 
@@ -141,7 +143,7 @@ const getGeneralType = input => {
 /**
  * 
  * @param {String} link 
- * @param {Object} platform 
+ * @param {Platform} platform 
  * @returns {type}
  */
 
@@ -182,10 +184,11 @@ const getDetailedType = (link , platform) => {
  * 
  * __Note:__ This function only checks the standards provided in {@link types} varable
  * @param {String} link 
- * @param {types} platform 
+ * @param {Platform} platform 
  */
 
 const matchidentifires = (link , platform) => {
+  let defualtType = {linktype : 'keywords' , input : link};
   let linkType = platform.types.find(type => link.includes(type.identifire));
   if (!linkType) return defualtType;
   return {

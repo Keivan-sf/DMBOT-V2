@@ -1,3 +1,5 @@
+// @ts-check
+
 require('dotenv').config();
 const TOKEN = process.env?.DEVELOPEMENT === 'TRUE' ? process.env.DTOKEN : process.env.TOKEN;
 const Discord = require('discord.js');
