@@ -134,18 +134,17 @@ const getPlaylistID = (link) => {
  *      .then(promise.SetResolved)
  *      .catch(promise.setRejected)
  *      
- *      
  * })
- * @param {PromiseOptions} value the value to be checked
+ * @param {PromiseOptions} promise the promise to be checked
  * @param {Number} ms timeout in ms
  * @param {any} reject Reject function of the parent promise
  * @returns {Promise} Timer ID
  */
 
-const detectTimeout = async(value , ms , reject) => {
+const detectTimeout = async(promise , ms , reject) => {
     await sleep(ms);
-    if(!value || value.isPending) {
-        value.setRejected();
+    if(!promise || promise.isPending) {
+        promise.setRejected();
         reject('#DM06 , There was a timeout while requesting to your desired song')
     }
 }
