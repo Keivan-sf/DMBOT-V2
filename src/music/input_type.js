@@ -193,7 +193,7 @@ const matchidentifires = (link , platform) => {
   if (!linkType) return defualtType;
   return {
     platform : platform.name,
-    type : linkType.type,
+    linktype : linkType.type,
     input : link
   }
 }

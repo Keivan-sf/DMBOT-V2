@@ -35,6 +35,7 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
     const getLinkInfo = {
         "youtube" : {
             "video" : Youtube.getVideoInfo,
+            "playlist" : Youtube.getPlaylistInfo,
         }
     }
 

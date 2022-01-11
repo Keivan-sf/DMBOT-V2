@@ -17,7 +17,6 @@ class Player {
 
     }
 
-
     resume(){
 
     }
@@ -32,6 +31,10 @@ class Player {
 
     clear(){
 
+    }
+
+    get currentUser(){
+        return '';
     }
 
 }
