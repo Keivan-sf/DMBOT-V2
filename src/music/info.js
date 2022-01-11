@@ -1,4 +1,6 @@
+//@ts-check
 const { Worker } = require('worker_threads')
+const ytdl = require('ytdl-core')
 
 /**
  * Gathers information about a __text input__ or a __link__
@@ -28,16 +30,18 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
         videoOnly : setValue(options.videoOnly , true)
     }
 
-    if(!platform) return await searchYouTube(input , config);
+    if(!platform) return searchYouTube(input , config);
+
+    
 
 }
 
 /**
  * Used to search youtube with a provided query
  * @param {String} query 
- * @param {Object} options Info gathering options
- * @param {Boolean} options.firstResult __Defult : true__ , Only provides the first item of the text search *(Good for performance)* 
- * @param {Boolean} options.videoOnly __Defult : true__ , Only provides the video results of text search *(if false, There can be channels , playlsit etc.)*
+ * @param {Object} config Info gathering options
+ * @param {Boolean} config.firstResult __Defult : true__ , Only provides the first item of the text search *(Good for performance)* 
+ * @param {Boolean} config.videoOnly __Defult : true__ , Only provides the video results of text search *(if false, There can be channels , playlsit etc.)*
  * @returns {Promise<Array|Object>}
  */
 
@@ -45,22 +49,29 @@ const searchYouTube = (query , config = {firstResult : true , videoOnly: true}) 
 
     const musicFinder = new Worker('./src/music/worker.js' , { workerData: { query , config } });
 
+    let hasResponded = false;
+
     musicFinder.once('message' , results => {
+        hasResponded = true;
         resolve(JSON.parse(results));
     })
 
-    musicFinder.once('error' , err => reject('Threaderr: ' + err));
+    musicFinder.once('error' , err => {
+        reject(err)
+        hasResponded = true;
+    });
 
     const rejectAndTerminate = () => {
-
-        musicFinder.terminate().catch(err=> console.log('Error terminating a wasted worker' , err))
-        
-        reject('#DM03 , The searching proccess took too long');
+        if(hasResponded) return;
+        musicFinder.terminate().catch(err => console.log('Error terminating a wasted worker' , err))
+        reject('#DM03 , Searching proccess on youtube took too long');
     }
 
-//    setTimeout(rejectAndTerminate , 12000)
+    setTimeout(rejectAndTerminate , 12000)
 
 })
+
+
 
 const setValue = (value , defualt) => value !== undefined ? value : defualt;
 
