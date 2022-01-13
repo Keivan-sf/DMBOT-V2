@@ -2,7 +2,9 @@
 const {workerData , parentPort} = require('worker_threads');
 const ytSearch = require('yt-search');
 
-search();
+search().catch(err => {
+    parentPort.postMessage(JSON.stringify({"error" : err.message}))
+})
 
 async function search(){
 

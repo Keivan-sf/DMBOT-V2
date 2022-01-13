@@ -28,7 +28,9 @@ const search = (query , config = {firstResult : true , videoOnly: true , format 
     
     musicFinder.once('message' , results => {
         clearTimeout(timerID);
-        resolve(JSON.parse(results));
+        const parsed = JSON.parse(results);
+        if(parsed.error) return reject(parsed.error);
+        resolve(parsed);
     })
     
     musicFinder.once('error' , err => {

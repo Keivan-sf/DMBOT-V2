@@ -8,13 +8,12 @@ async function playMusic(message , input){
 
         const type = getInputType(input);
         console.log(type)
-        console.log('here')
         const info = await getInfo(type.input , type.linktype , type.platform);
         console.log(info)
 
     }catch(err){
          // new Error('#DM02 , There was an internal error finding your song')
-        console.log(`Error:` , err)
+        console.log(`Hanlded Error:` , err)
     }
 
 }
