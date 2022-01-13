@@ -3,7 +3,6 @@ const { Worker } = require('worker_threads')
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
 const PromiseOptions = require('../Promises');
-const { detectTimeout } = require('../request')
 
 /**
 * Used to search youtube with a provided query
@@ -47,7 +46,7 @@ const getVideoInfo = async (link) => new Promise(async(resolve, reject) => {
 
     const promise = new PromiseOptions();
 
-    detectTimeout(promise , 12000 , '#DM06' , reject);
+    promise.autoReject(12000 , '#DM06' , reject);
  
     ytdl.getInfo(link)
     .then(info => {
@@ -80,7 +79,7 @@ const getPlaylistInfo = async (link) => new Promise(async(resolve , reject) => {
      */
     const promise = new PromiseOptions();
 
-    detectTimeout(promise , 12000 , '#DM06' , reject);
+    promise.autoReject(12000 , '#DM06' , reject);
 
     ytpl(id)
     .then(info => {
