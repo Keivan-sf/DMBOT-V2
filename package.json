@@ -4,7 +4,7 @@
   "description": "Deadmoments bot v2",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +18,9 @@
     "ytpl": "^2.2.3"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
     "jsdoc": "^3.6.7",
-    "minami": "^1.2.3"
+    "minami": "^1.2.3",
+    "mocha": "^9.1.3"
   }
 }

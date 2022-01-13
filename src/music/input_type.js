@@ -81,6 +81,10 @@ const types = [
         type : 'artist',
         identifire : '/artist/'
       },
+      {
+        type : 'user',
+        identifire : '/user/'
+      }
     ]
   },
 
@@ -116,9 +120,16 @@ const types = [
 
 function getInputType(target){
   const URL_DETECTED = detectURLs(target);
+
   if(!URL_DETECTED || URL_DETECTED.length < 1) return {linktype : 'keywords' , input : target , platform: null};
+
   let input = URL_DETECTED[0];
+
   input = input.endsWith('/') ? input :  input + '/';
+
+  // making sure URL has a portocol
+  input = protocols.some(port => input.startsWith(port)) ? input : `https://${input}`;
+
   const generalType = getGeneralType(input);
   const details = getDetailedType(input , generalType);
   return details;
@@ -129,15 +140,18 @@ function getInputType(target){
  */
 
 const getGeneralType = input => {
-  const isAddressIncluded = (address) => {
-    return protocols.some(port => {
-      const isIncluded = input.includes(`${port}://${address}`) || input.includes(`${port}://www.${address}`);
-      return isIncluded;
-    });
-  }
+
+  /**
+   * Made to be called upon by `some()` function
+   * @param {String} address 
+   * @returns {Boolean}
+   */
+  const isAddressIncluded = (address) => input.includes(address);
 
   let type = types.find(platform => platform.addresses.some(isAddressIncluded));
+
   return type ? type : {name : 'keywords'};
+
 }
 
 /**
