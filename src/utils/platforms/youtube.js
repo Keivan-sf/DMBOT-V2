@@ -3,7 +3,7 @@ const { Worker } = require('worker_threads')
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
 const PromiseOptions = require('../Promises');
-
+const { detectTimeout } = require('../request')
 
 /**
 * Used to search youtube with a provided query
@@ -19,7 +19,7 @@ const search = (query , config = {firstResult : true , videoOnly: true , format 
 
     const rejectAndTerminate = () => {
         musicFinder.terminate().catch(err => console.log('Error terminating a wasted worker' , err))
-        reject('#DM03 , Searching proccess on youtube took too long');
+        reject('#DM03');
     }
     
     const timerID = setTimeout(rejectAndTerminate , 12000)
@@ -45,7 +45,7 @@ const getVideoInfo = async (link) => new Promise(async(resolve, reject) => {
 
     const promise = new PromiseOptions();
 
-    detectTimeout(promise , 12000 , reject);
+    detectTimeout(promise , 12000 , '#DM06' , reject);
  
     ytdl.getInfo(link)
     .then(info => {
@@ -62,10 +62,8 @@ const getVideoInfo = async (link) => new Promise(async(resolve, reject) => {
         if(!promise.isPending) return;
 
         promise.setRejected();
-
-        console.log(err)
         
-        reject('DM#07 , We could not find the video related to your song');
+        reject('DM#07');
 
     })
  
@@ -80,7 +78,7 @@ const getPlaylistInfo = async (link) => new Promise(async(resolve , reject) => {
      */
     const promise = new PromiseOptions();
 
-    detectTimeout(promise , 12000 , reject);
+    detectTimeout(promise , 12000 , '#DM06' , reject);
 
     ytpl(id)
     .then(info => {
@@ -98,7 +96,7 @@ const getPlaylistInfo = async (link) => new Promise(async(resolve , reject) => {
 
         promise.setRejected();
 
-        reject('DM#07 , We could not find the playlist related to your link');
+        reject('DM#07');
 
     })
 
@@ -117,45 +115,9 @@ const getPlaylistID = (link) => {
 
     idytpl = idytpl.endsWith('/') ? idytpl.split('/').join('') : idytpl;
     
-    if(!idytpl) throw new Error('DM#05 , Playlist could not be found');
+    if(!idytpl) throw new Error('#DM05');
     return idytpl;
 }
-
-/**
- * Used to throw `#DM06` error if the promise is still pending after the given time
- * @example
- * const promiseFunction = new Promise((resolve , reject) => {
- * 
- *      const promise = new PromiseOptions();
- *      
- *      detectTimeout(promise , 1000 , reject);
- *      
- *      new Promise((resolve , reject) => setTimeout(resolve , 3000))
- *      .then(promise.SetResolved)
- *      .catch(promise.setRejected)
- *      
- * })
- * @param {PromiseOptions} promise the promise to be checked
- * @param {Number} ms timeout in ms
- * @param {any} reject Reject function of the parent promise
- * @returns {Promise} Timer ID
- */
-
-const detectTimeout = async(promise , ms , reject) => {
-    await sleep(ms);
-    if(!promise || promise.isPending) {
-        promise.setRejected();
-        reject('#DM06 , There was a timeout while requesting to your desired song')
-    }
-}
-
-/**
- * used to stop the proccess until the given time range has been fulfilled
- * @param {Number} ms timeout in ms
- * @returns {Promise}
- */
-
-const sleep = ms => new Promise((resolve) => setTimeout(resolve , ms));
 
 /**
  * Youtube utilities

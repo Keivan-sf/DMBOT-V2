@@ -1,4 +1,5 @@
 // @ts-check
+
 /**
  * @typedef {Object} PlatformsType
  * @prop {String} type Type name, *example* `video` `playlist` `user` `song` `album` , ...
