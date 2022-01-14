@@ -41,7 +41,9 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
         },
 
         "soundcloud" : {
-            "set" : SoundCloud.getPlaylsitInfo,
+            "song" : SoundCloud.getSongInfo,
+            "set" : SoundCloud.getPlaylistInfo,
+            
         },
         
     }
