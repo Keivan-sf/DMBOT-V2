@@ -3,4 +3,3 @@ node_modules
 jsdoc.json
 docs
 yarn.lock
-errors.json

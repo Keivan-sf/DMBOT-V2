@@ -64,7 +64,7 @@ const getVideoInfo = async (link) => new Promise(async(resolve, reject) => {
 
         promise.setRejected();
         
-        reject('DM#07');
+        reject('#DM09');
 
     })
  
@@ -97,7 +97,7 @@ const getPlaylistInfo = async (link) => new Promise(async(resolve , reject) => {
 
         promise.setRejected();
 
-        reject('DM#07');
+        reject('#DM07');
 
     })
 

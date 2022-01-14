@@ -1,0 +1,20 @@
+{
+    "#DM01" : "Nothing has been found for the given keyword in Youtube",
+
+    "#DM02" : "There was an internal error finding your song",
+
+    "#DM03" : "Searching proccess on Youtube took too long",
+
+    "#DM04" : "No video has been found for the given keyword in Youtube",
+
+    "#DM05" : "Your Youtube playlist could not be found",
+
+    "#DM06" : "The request took too long to respond",
+
+    "#DM07" : "We could not find your intended playlist",
+
+    "#DM08" : "Your soundcloud playlist could not be found",
+
+    "#DM09" : "We could not find the video related to your song"
+    
+}

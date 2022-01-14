@@ -9,7 +9,7 @@ const getPlaylsitInfo = link => new Promise((resolve , reject) => {
 
     const promise = new PromiseOptions();
 
-    detectTimeout(promise , 12000 , '#DM06' , reject);
+    promise.autoReject(12000 , '#DM06' , reject);
 
     scDownloader.getSetInfo(link).then(playlist => {
 

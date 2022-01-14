@@ -1,6 +1,7 @@
 // @ts-check
 const { getInputType } = require('../music/input_type');
-const getInfo = require('../music/info')
+const getInfo = require('../music/info');
+const { errorHandler } = require('../utils/errors.js')
 
 async function playMusic(message , input){
 
@@ -13,7 +14,7 @@ async function playMusic(message , input){
 
     }catch(err){
          // new Error('#DM02 , There was an internal error finding your song')
-        console.log(`Hanlded Error:` , err)
+         errorHandler(err , message);
     }
 
 }
