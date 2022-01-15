@@ -6,6 +6,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "jest":{
+    "testPathIgnorePatterns" : ["modified_modules"]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

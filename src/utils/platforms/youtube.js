@@ -2,7 +2,8 @@
 const { Worker } = require('worker_threads')
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
-const PromiseOptions = require('../Promises');
+const PromiseOptions = require('../PromiseOptions');
+const { handleInfoPromise } = require('./utils')
 
 /**
 * Used to search youtube with a provided query
@@ -42,66 +43,15 @@ const search = (query , config = {firstResult : true , videoOnly: true , format 
 
 
 
-const getVideoInfo = async (link) => new Promise(async(resolve, reject) => {
-
-    const promise = new PromiseOptions();
-
-    promise.autoReject(12000 , '#DM06' , reject);
+const getVideoInfo =  (link) =>
+    handleInfoPromise(link , '#DM09' , ytdl , 'getInfo');
  
-    ytdl.getInfo(link)
-    .then(info => {
 
-        if(!promise.isPending) return;
 
-        promise.setFullfilled();
-
-        resolve(info)
-
-    })
-    .catch((err) => {
-
-        if(!promise.isPending) return;
-
-        promise.setRejected();
-        
-        reject('#DM09');
-
-    })
- 
-}) 
-
-const getPlaylistInfo = async (link) => new Promise(async(resolve , reject) => {
-
+const getPlaylistInfo = (link) => {
     const id = getPlaylistID(link);
-
-    /**
-     * Used to store promise status in order to handle rejections
-     */
-    const promise = new PromiseOptions();
-
-    promise.autoReject(12000 , '#DM06' , reject);
-
-    ytpl(id)
-    .then(info => {
-
-        if(!promise.isPending) return;
-
-        promise.setFullfilled();
-
-        resolve(info)
-
-    })
-    .catch(() => {
-
-        if(!promise.isPending) return;
-
-        promise.setRejected();
-
-        reject('#DM07');
-
-    })
-
-})
+    return handleInfoPromise(id , '#DM07' , ytpl);
+}
 
 /**
  * Used to get id from a valid youtube playlsit URL
