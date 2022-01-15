@@ -44,7 +44,7 @@ const search = (query , config = {firstResult : true , videoOnly: true , format 
 
 
 const getVideoInfo =  (link) =>
-    handleInfoPromise(link , '#DM09' , ytdl , 'getInfo');
+    handleInfoPromise(link , '#DM09' , ytdl , [] , 'getInfo');
  
 
 

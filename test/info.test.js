@@ -1,7 +1,6 @@
 const expect = require('chai').expect;
 const Youtube = require('../src/utils/platforms/youtube')
 const SoundCloud = require('../src/utils/platforms/soundcloud');
-//const jest = require('jest');
 
 
 jest.setTimeout(10000)
@@ -27,6 +26,11 @@ describe("Music info" , () => {
         it("playlist" , async() => {
             const result = await SoundCloud.getPlaylistInfo("https://soundcloud.com/user-692461400/sets/lofi?si=5033faf325ed4b1f99adc846adea3e60&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing");
             expect(result).to.have.deep.property('created_at' , '2017-03-08T04:03:46Z');
+        })
+
+        it("song" , async() => {
+            const result = await SoundCloud.getSongInfo("https://soundcloud.com/user-942528866/xxxtentacion-numb-everybody-dies-in-their-nightmares-mashup-cover");
+            expect(result).to.have.deep.property('created_at' , '2018-03-25T06:05:42Z');
         })
 
     })

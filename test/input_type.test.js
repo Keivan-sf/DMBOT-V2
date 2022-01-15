@@ -96,7 +96,7 @@ describe('Input type tests' , function(){
 
         const expected = {
           platform: 'spotify',
-          linktype: 'track',
+          linktype: 'song',
           input: 'https://open.spotify.com/track/7A0T4eb6jPhhQp3KQis6ww?si=d94d8d1c812e48fd/'
         }
 

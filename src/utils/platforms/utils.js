@@ -1,7 +1,7 @@
 //@ts-check
 const PromiseOptions = require('../PromiseOptions');
 
-const handleInfoPromise = (link , error_code , cl , method) => new Promise(async(resolve , reject) => {
+const handleInfoPromise = (link , error_code , cl , params , method) => new Promise(async(resolve , reject) => {
 
     const promise = new PromiseOptions();
     promise.autoReject(12000 , '#DM06' , reject);
@@ -11,9 +11,30 @@ const handleInfoPromise = (link , error_code , cl , method) => new Promise(async
         let info;
 
         if(method){
-            info = await cl[method](link);
+
+            if(params?.length > 0){
+
+                info = await cl[method](link , ...params);
+                
+            }else{
+
+                info = await cl[method](link);
+
+            }
+
+
         }else{
-            info = await cl(link);
+
+            if(params?.length > 0){
+
+                info = await cl(link , ...params);
+                
+            }else{
+
+                info = await cl(link);
+
+            }
+
         }
 
         if(!promise.isPending) return;

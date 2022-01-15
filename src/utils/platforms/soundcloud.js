@@ -5,11 +5,12 @@ const scDownloader = require('../../../modified_modules/soundcloud-downloader/in
 const { handleInfoPromise } = require('./utils');
 
 const getPlaylistInfo = link => 
-    handleInfoPromise(link , '#DM08' , scDownloader , 'getSetInfo')
+    handleInfoPromise(link , '#DM08' , scDownloader , [SOUND_CLOUD_KEY] , 'getSetInfo')
 
 
 const getSongInfo = link => 
-    handleInfoPromise(link , '#DM10' , scDownloader , 'getInfo')    
+    handleInfoPromise(link , '#DM10' , scDownloader , [SOUND_CLOUD_KEY] , 'getInfo')    
 
 
-module.exports = { getPlaylistInfo , getSongInfo}
+
+module.exports = { getPlaylistInfo , getSongInfo }

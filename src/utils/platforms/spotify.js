@@ -16,4 +16,4 @@ const getPlaylistInfo = link => {
     return handleInfoPromise(link , '#DM12' , spotifyInfo , 'getPlaylistByURL');
 }
 
-module.exports = { getSongInfo , getPlaylistInfo}
+module.exports = { getSongInfo , getPlaylistInfo }
