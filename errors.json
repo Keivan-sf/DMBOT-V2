@@ -13,8 +13,13 @@
 
     "#DM07" : "We could not find your intended playlist",
 
-    "#DM08" : "Your soundcloud playlist could not be found",
+    "#DM08" : "Your Soundcloud playlist could not be found",
 
-    "#DM09" : "We could not find the video related to your song"
-    
+    "#DM09" : "We could not find the video related to your song",
+
+    "#DM10" : "We could not find any song related to your Soundcloud link",
+
+    "#DM11" : "We could not find any song related to your Spotify link",
+
+    "#DM12" : "We could not playlist any song related to your Spotify link"
 }

@@ -67,7 +67,7 @@ const types = [
     ],
     types : [
       {
-        type : 'track',
+        type : 'song',
         identifire : '/track/'
       },
       {

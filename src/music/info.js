@@ -1,6 +1,7 @@
 // @ts-check
 const Youtube = require('../utils/platforms/youtube');
 const SoundCloud = require('../utils/platforms/soundcloud');
+const Spotify = require('../utils/platforms/spotify');
 
 /**
  * Gathers information about a __text input__ or a __link__
@@ -43,10 +44,17 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
         "soundcloud" : {
             "song" : SoundCloud.getSongInfo,
             "set" : SoundCloud.getPlaylistInfo,
-            
+          //  "artist" ...   to be developed
         },
+
+        "spotify" : {
+            "song" : Spotify.getSongInfo,
+            "playlist" : Spotify.getPlaylistInfo,
+        }
         
     }
+
+    console.log(`platform : ${platform} , type : ${type}`);
 
     return getLinkInfo[platform][type](input);
 
