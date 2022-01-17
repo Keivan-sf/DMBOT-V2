@@ -46,6 +46,8 @@ const handleInfoPromise = (link , error_code , cl , params , method) => new Prom
 
     }catch(err){
 
+        console.log(err)
+
         if(!promise.isPending) return;
 
         promise.setRejected();

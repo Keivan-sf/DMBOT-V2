@@ -50,6 +50,8 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
         "spotify" : {
             "song" : Spotify.getSongInfo,
             "playlist" : Spotify.getPlaylistInfo,
+            "album" : Spotify.getAlbumInfo,
+            "artist" : Spotify.getArtistInfo,
         }
         
     }

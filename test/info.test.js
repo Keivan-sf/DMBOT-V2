@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const Youtube = require('../src/utils/platforms/youtube')
 const SoundCloud = require('../src/utils/platforms/soundcloud');
-
+const Spotify = require('../src/utils/platforms/spotify');
 
 jest.setTimeout(10000)
 
@@ -31,6 +31,30 @@ describe("Music info" , () => {
         it("song" , async() => {
             const result = await SoundCloud.getSongInfo("https://soundcloud.com/user-942528866/xxxtentacion-numb-everybody-dies-in-their-nightmares-mashup-cover");
             expect(result).to.have.deep.property('created_at' , '2018-03-25T06:05:42Z');
+        })
+
+    })
+
+    describe("Spotify" , () => {
+
+        it("song" , async () => {
+            const result = await Spotify.getSongInfo("https://open.spotify.com/track/3sVlvHkFjyIrU8qeejurdP?si=cafdbd1b0bb74208");
+            expect(result).to.have.deep.property('name' , 'Imagination');
+        })
+
+        it("playlist" , async() => {
+            const result = await Spotify.getPlaylistInfo("https://open.spotify.com/playlist/1lVm0OD4KbjEcxzjxP99vN");
+            expect(result).to.have.deep.property('uri' , 'spotify:playlist:1lVm0OD4KbjEcxzjxP99vN')
+        })
+
+        it("album" , async() => {
+            const result = await Spotify.getAlbumInfo("https://open.spotify.com/album/47BiFcV59TQi2s9SkBo2pb");
+            expect(result).to.have.deep.property('release_date' , '2010-06-18');
+        })
+
+        it("artist" , async() => {
+            const result = await Spotify.getArtistInfo("https://open.spotify.com/artist/7dGJo4pcD2V6oG8kP0tJRR?si=da3308f8ed8a4f77");
+            expect(result).to.have.deep.property('dominantColor' , '#535353');
         })
 
     })
