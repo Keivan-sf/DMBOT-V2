@@ -1,12 +1,13 @@
 /*
     `.env` variables are needed for some tests to work
-    In the source-closed version they've been provided in `./test/test-env.js` which is included in `.gitignore`
+    In the source-closed version they've been provided in `./test/jest.env.js` which is included in `.gitignore`
 */
 
 const expect = require('chai').expect;
 const Youtube = require('../src/utils/platforms/youtube')
 const SoundCloud = require('../src/utils/platforms/soundcloud');
 const Spotify = require('../src/utils/platforms/spotify');
+const RadioJavan = require('../src/utils/platforms/radiojavan');
 
 describe("Music info" , () => {
 
@@ -61,5 +62,36 @@ describe("Music info" , () => {
         })
 
     })
+
+    describe("RadioJavan" , () => {
+
+        it("song" , async () => {
+            const result = await RadioJavan.getInfo("https://www.radiojavan.com/mp3s/mp3/Madgal-Rafighe-Ghadimi");
+            expect(result).to.have.deep.property('artist' , 'Madgal');
+        })
+
+        it("playlsit" , async () => {
+            const result = await RadioJavan.getInfo("https://www.radiojavan.com/playlists/playlist/mp3/7e6d4b8decf2");
+            expect(result).to.have.deep.property('title' , 'Sonati');
+        })
+
+        it("album" , async () => {
+            const result = await RadioJavan.getInfo("https://www.radiojavan.com/mp3s/album/Koorosh-420");
+            expect(result).to.have.deep.property('artist' , 'Koorosh');
+            expect(result).to.have.deep.property('songs' , 12);
+        })
+
+        it("video" , async () => {
+            const result = await RadioJavan.getInfo("https://www.radiojavan.com/videos/video/donya-live-in-istanbul-2021");
+            expect(result).to.have.deep.property('date' , 'jan 4, 2022');
+        })
+
+        it("podcast" , async () =>{
+            const result = await RadioJavan.getInfo("https://www.radiojavan.com/podcasts/podcast/Yalda-Mix-2021-DeeJay-AL");
+            expect(result).to.have.deep.property('creator' , 'Deejay Al');
+        })
+
+    })
+
 
 })

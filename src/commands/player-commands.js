@@ -13,7 +13,7 @@ async function playMusic(message , input){
         console.log(info)
 
     }catch(err){
-         // new Error('#DM02 , There was an internal error finding your song')
+         // new Error('#DM02 , There was an internal error finding your song');
          errorHandler(err , message);
     }
 

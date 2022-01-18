@@ -27,5 +27,7 @@
 
     "#DM14" : "We could not find any artist related to your Spotify link",
 
-    "#DM15" : "We could not find anything related to your RadioJavan link"
+    "#DM15" : "We could not find anything related to your RadioJavan link",
+
+    "#DM16" : "We cannot identify your link"
 }

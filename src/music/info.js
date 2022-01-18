@@ -2,6 +2,7 @@
 const Youtube = require('../utils/platforms/youtube');
 const SoundCloud = require('../utils/platforms/soundcloud');
 const Spotify = require('../utils/platforms/spotify');
+const RadioJavan = require('../utils/platforms/radiojavan');
 
 /**
  * Gathers information about a __text input__ or a __link__
@@ -44,7 +45,7 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
         "soundcloud" : {
             "song" : SoundCloud.getSongInfo,
             "set" : SoundCloud.getPlaylistInfo,
-          //  "artist" ...   to be developed
+            //  "artist" ...   to be developed
         },
 
         "spotify" : {
@@ -52,17 +53,26 @@ async function getInfo(input , type , platform , options = {firstResult : true ,
             "playlist" : Spotify.getPlaylistInfo,
             "album" : Spotify.getAlbumInfo,
             "artist" : Spotify.getArtistInfo,
+        },
+
+        "radiojavan" : {
+            "any" : RadioJavan.getInfo,
         }
         
     }
 
+    /**
+     * `rjdl.getInfo` accepts all types of links, therefore type of the link doesn't matter when platform is `radiojavan`
+     */
+    const linktype = platform != 'radiojavan' ? type : "any";
+
     console.log(`platform : ${platform} , type : ${type}`);
 
-    return getLinkInfo[platform][type](input);
+    if(!getLinkInfo[platform][linktype] || typeof getLinkInfo[platform][linktype] != 'function') throw new Error('#DM16');
+
+    return getLinkInfo[platform][linktype](input);
 
 }
-
-
 
 
 

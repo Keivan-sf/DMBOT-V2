@@ -23,14 +23,6 @@
 const ytdl = require('ytdl-core')
 const rjdl = require('node-rjdl')
 
-const validRjTypes = [
-  'song',
-  'playList',
-  'video',
-  'podcast',
-  'album'
-]
-
 const protocols = ['https' , 'http'];
 
 const types = [
@@ -224,12 +216,6 @@ const detectURLs = text =>
   text.match(/(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/g);
 
 
-/**
- * Used to validate whether provided RadioJavan type is supported or not
- * @param {String} type Type to be checked
- */
-const validateRjArg = type => validRjTypes.some(rjType => rjType === type);
-
 
 /**
  * Used to get youtube ID from a valid youtube video url
@@ -259,4 +245,4 @@ function getYoutubeID(url){
 }
   
 
-module.exports = { getInputType , getYoutubeID , validateRjArg }
+module.exports = { getInputType , getYoutubeID }

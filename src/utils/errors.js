@@ -22,7 +22,11 @@ An internal error has occurred, please contact \`${supportID}\` for more informa
 
 module.exports.errorHandler = (error , message) => {
 
-    const definedErrorCode = error_codes.find(errcode => errcode === error);
+    const errorCode = error.message ? error.message : error;
+
+    console.log(`my errro code here : ${errorCode}`)
+
+    const definedErrorCode = error_codes.find(errcode => errcode === errorCode);
 
     if(!definedErrorCode){
         if(!message) return;
