@@ -25,5 +25,7 @@
 
     "#DM13" : "We could not find any album related to your Spotify link",
 
-    "#DM14" : "We could not find any artist related to your Spotify link"
+    "#DM14" : "We could not find any artist related to your Spotify link",
+
+    "#DM15" : "We could not find anything related to your RadioJavan link"
 }

@@ -259,4 +259,4 @@ function getYoutubeID(url){
 }
   
 
-module.exports = {getInputType , getYoutubeID , validateRjArg}
+module.exports = { getInputType , getYoutubeID , validateRjArg }

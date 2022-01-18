@@ -1,9 +1,12 @@
+/*
+    `.env` variables are needed for some tests to work
+    In the source-closed version they've been provided in `./test/test-env.js` which is included in `.gitignore`
+*/
+
 const expect = require('chai').expect;
 const Youtube = require('../src/utils/platforms/youtube')
 const SoundCloud = require('../src/utils/platforms/soundcloud');
 const Spotify = require('../src/utils/platforms/spotify');
-
-jest.setTimeout(10000)
 
 describe("Music info" , () => {
 

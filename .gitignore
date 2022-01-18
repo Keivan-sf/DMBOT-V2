@@ -3,3 +3,4 @@ node_modules
 jsdoc.json
 docs
 yarn.lock
+test/jest.env.js
