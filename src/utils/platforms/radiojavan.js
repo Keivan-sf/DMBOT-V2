@@ -15,9 +15,9 @@ const validateRjArg = type => {
 
 }
 
-const getInfo = async(link) => {
-    return handleInfoPromise(link, '#DM15' , rjdl , [] , 'getInfo');
-}
+const getInfo = async(link) => 
+    handleInfoPromise(link, '#DM15' , rjdl , [] , 'getInfo');
+
 
 
 module.exports = { getInfo , validateRjArg };

@@ -1,9 +1,22 @@
 // @ts-check
+
+const { User } = require('discord.js');
 const { Worker } = require('worker_threads')
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
-const PromiseOptions = require('../PromiseOptions');
-const { handleInfoPromise } = require('./utils')
+const { handleInfoPromise , numberToTimestamp} = require('./utils')
+
+
+/**
+ * @typedef {{url: String , title: String , duration:{seconds: Number , timestamp: String} , thumbnail: String , platform: String , userID : String , playFromInfo?}} DM_TRACK
+ */
+
+/**
+ * @typedef DM_PLAYLIST
+ * @prop {{url: String , title: String , tracks_count: Number , thumbnail: String , platform: String , userID : String}} list
+ * @prop {Array<DM_TRACK>} tracks
+ */
+
 
 /**
 * Used to search youtube with a provided query
@@ -11,11 +24,10 @@ const { handleInfoPromise } = require('./utils')
 * @param {Object} [config] Info gathering options
 * @param {Boolean} [config.firstResult] __Defult : true__ , Only provides the first item of the text search *(Good for performance)* 
 * @param {Boolean} [config.videoOnly] __Defult : true__ , Only provides the video results of text search *(if false, There can be channels , playlsit etc.)*
-* @param {"normal"|"dmplayer"} [config.format]
 * @returns {Promise<Array|Object>}
 */
 
-const search = (query , config = {firstResult : true , videoOnly: true , format : 'normal'}) => new Promise((resolve , reject) => {
+const search = (query , config = {firstResult : true , videoOnly: true}) => new Promise((resolve , reject) => {
 
     const rejectAndTerminate = () => {
         musicFinder.terminate().catch(err => console.log('Error terminating a wasted worker' , err))
@@ -24,7 +36,7 @@ const search = (query , config = {firstResult : true , videoOnly: true , format 
     
     const timerID = setTimeout(rejectAndTerminate , 12000)
 
-    const musicFinder = new Worker('./src/music/worker.js' , { workerData: { query , config } });
+    const musicFinder = new Worker('./src/utils/platforms/youtube-search-worker.js' , { workerData: { query , config } });
     
     musicFinder.once('message' , results => {
         clearTimeout(timerID);
@@ -58,7 +70,8 @@ const getPlaylistInfo = (link) => {
  * @param {String} link 
  * @returns {String} playlsit id
  */
-const getPlaylistID = (link) => {
+
+function getPlaylistID(link){
 
     let idytpl = link.split("playlist?list=")[1]
 
@@ -71,11 +84,122 @@ const getPlaylistID = (link) => {
 }
 
 /**
+ * Used to convert normal youtube info formats into `dmplayer` friendly formatted object
+ */
+
+const DMFormat = {
+
+    convertFromSearch,
+
+    convertFromVideo,
+
+    convertFromList,
+
+}
+
+
+/**
+ * Converts YouTube's first search result into a `DM_TRACK` object
+ * @param {Object} info 
+ * @param {User} user 
+ * @returns {DM_TRACK}
+ */
+
+
+function convertFromSearch(info , user){
+
+    const platform = 'YouTube';
+    const userID = user.id;
+
+    const url = info.url;
+    const title = info.title;
+    const duration = { seconds : info.seconds , timestamp : info.timestamp };
+    const thumbnail = info.thumbnail;
+
+    return {url , title , duration , thumbnail , platform , userID};
+    
+}
+
+/**
+ * Converts a YouTube video into a `DM_TRACK` object
+ * @param {Object} info 
+ * @param {User} user 
+ * @returns {DM_TRACK}
+ */
+
+
+function convertFromVideo(info , user){
+
+    const platform = 'YouTube';
+    const userID = user.id;
+
+    const videoDetails = info.videoDetails;
+
+    const url = "https://www.youtube.com/watch?v=" + videoDetails.videoId;
+
+    const title = videoDetails.title;
+
+    const duration_in_seconds = +videoDetails.lengthSeconds;
+
+    const duration = { seconds: duration_in_seconds , timestamp : numberToTimestamp.convert(duration_in_seconds)};
+
+    let thumbnail = videoDetails.thumbnail?.thumbnails?.[0]?.url;
+
+    thumbnail = thumbnail ? thumbnail.split('?')[0] : null;
+
+    return {url , title , duration , thumbnail , platform , userID , playFromInfo: info}
+
+}
+
+/**
+ * Converts a YouTube playlist into a `DM_PLAYLIST` object
+ * @param {Object} info 
+ * @param {User} user 
+ * @returns {DM_PLAYLIST}
+ */
+
+
+function convertFromList(info , user){
+
+    const platform = 'YouTube';
+    const userID = user.id;
+
+    const list = {
+        url : info.url,
+        title : info.title,
+        tracks_count : info.items.length,
+        thumbnail: info.thumbnails.slice(-1)?.[0].url?.split('?')[0],
+        platform,
+        userID
+    }
+
+    let tracks = [];
+
+    for(const item of info.items){
+
+        const url = item.shortUrl;
+
+        const title = item.title;
+
+        const duration = { seconds: item.durationSec , timestamp: item.duration ?? numberToTimestamp.convert(item.durationSec) };
+
+        const thumbnail = item.thumbnails?.slice(-1)?.[0].url?.split('?')[0];
+
+        tracks.push({url , title , duration , thumbnail , platform , userID})
+
+    }
+
+    return { list , tracks };
+
+}
+
+
+/**
  * Youtube utilities
  */
 
 const Youtube = {
-    search , getVideoInfo , getPlaylistInfo
+    search , getVideoInfo , getPlaylistInfo , DMFormat
 }
 
 module.exports = Youtube;

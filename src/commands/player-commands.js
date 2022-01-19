@@ -1,7 +1,14 @@
 // @ts-check
 const { getInputType } = require('../music/input_type');
 const getInfo = require('../music/info');
-const { errorHandler } = require('../utils/errors.js')
+const { errorHandler } = require('../utils/errors.js');
+const { Message } = require('discord.js');
+
+/**
+ * 
+ * @param {Message} message 
+ * @param {*} input 
+ */
 
 async function playMusic(message , input){
 
@@ -9,7 +16,7 @@ async function playMusic(message , input){
 
         const type = getInputType(input);
         console.log(type)
-        const info = await getInfo(type.input , type.linktype , type.platform);
+        const info = await getInfo(type.input , type.linktype , type.platform , { format : 'dmplayer' , user : message.author });
         console.log(info)
 
     }catch(err){

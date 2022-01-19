@@ -6,6 +6,10 @@
  */
 class Player {
 
+    #playerData = {
+        currentMesssage : null,
+    }
+
     /**
      * To play a new song
      */

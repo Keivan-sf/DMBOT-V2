@@ -56,7 +56,47 @@ const handleInfoPromise = (link , error_code , cl , params , method) => new Prom
 
     }
 
-}) 
+})
+
+const numberToTimestamp = {
+
+    /**
+     * 
+     * @param {Number} duration 
+     */
+
+    convert(duration , unit="second"){
+
+        let seconds = duration;
+    
+        if(unit === "milisecond") seconds /= 1000;
+    
+        let sec = seconds%60;
+        let hours = Math.floor(seconds/3600);
+        let min = Math.floor(seconds/60) % 60;
+    
+        const time = [hours , min , sec]
+    
+        .map(part => part.toString().padStart(2 , "0"))
+        
+         // filters out "seconds" and "minutes" regardless of their value and filter "hours" if its value is not "00" 
+         
+        .filter((part , index) => part !== "00" || index > 0)
+        
+        .join(':') 
+    
+        return time;
+
+    },
+
+    reverse(){
+
+    }
+}
+
+const convertToDmFriendly = (info , platform , type) => {
+    
+}
 
 
-module.exports = { handleInfoPromise };
+module.exports = { handleInfoPromise , numberToTimestamp};
