@@ -4,7 +4,7 @@
   "description": "Deadmoments bot v2",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "start": "node index.js"
   },
   "jest": {
     "testPathIgnorePatterns": [
